@@ -23,42 +23,16 @@ do
         
 done
 
-mkdir splittemp
+cd $eigen
+hg clone https://bitbucket.org/eigen/eigen
+cd "$eigen/eigen"
+mkdir build
+cmake "$eigen/eigen/build"
+cd $cnn
+git clone https://github.com/clab/cnn.git
+cd "$cnn/cnn"
+mkdir build
+cmake .. -DEIGEN3_INCLUDE_DIR="$eigen/eigen"
+make -j 4
 
-lines=(`wc -l "$input"`)
-
-# count the number of lines 
-
-r=$(($lines%$number_file))
-
-
-if (($r == 0)); then 
-	lines_file=$(($lines/$number_file))
-else
-	lines_file=$(($lines/$number_file+1))
-fi
-
-# split data
-split -l $lines_file $input tempzh
-mv tempzh* splittemp
-
-cd splittemp
-j=1
-for i in tempzh*;
-do
-	mv $i $j
-
-	((j=j+1))
-done
-
-cd ../
-
-for ((i=1;i<=number_file;i++));do
-	{
-	osascript -e 'tell application "Terminal" to activate' -e 'tell application "System Events" to tell process "Terminal" to keystroke "t" using command down'
-	ls
-	python '$pyc' "$i"
-	} &
-done 
-wait
 
