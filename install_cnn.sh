@@ -1,16 +1,16 @@
 #!/bin/bash
 
 
-while getopts "eigen:cnn" arg #选项后面的冒号表示该选项需要参数
+while getopts "e:c:" arg #选项后面的冒号表示该选项需要参数
 do
         case $arg in
-             eigen)
+             e)
                 echo "eigen's arg:$OPTARG" #参数存在$OPTARG中
                 eigen=$OPTARG
                 echo $eigen
                 
                 ;;
-             cnn)
+             c)
                 echo "cnn's arg:$OPTARG"
                 cnn=$OPTARG
                 ;;
@@ -25,14 +25,19 @@ done
 
 cd $eigen
 hg clone https://bitbucket.org/eigen/eigen
-cd "$eigen/eigen"
+eigen="$eigen/eigen"
+cd eigen
 mkdir build
-cmake "$eigen/eigen/build"
+cd build
+cmake $eigen
+
 cd $cnn
 git clone https://github.com/clab/cnn.git
-cd "$cnn/cnn"
+cnn=
+cd cnn
 mkdir build
-cmake .. -DEIGEN3_INCLUDE_DIR="$eigen/eigen"
+cd build
+cmake .. -DEIGEN3_INCLUDE_DIR=$eigen
 make -j 4
 
 
