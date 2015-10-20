@@ -33,7 +33,6 @@ cmake $eigen
 
 cd $cnn
 git clone https://github.com/clab/cnn.git
-cnn=
 cd cnn
 mkdir build
 cd build
